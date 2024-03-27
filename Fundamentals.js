@@ -15,7 +15,7 @@ const CourseInfo = {
         id: 1,
         name: "Declare a Variable",
         due_at: "2023-01-25",
-        points_possible: 50,
+        points_possible: 50, // change for checking
       },
       {
         id: 2,
@@ -26,7 +26,7 @@ const CourseInfo = {
       {
         id: 3,
         name: "Code the World",
-        due_at: "3156-11-15",
+        due_at: "2023-13-15",
         points_possible: 500,
       },
     ],
@@ -102,9 +102,32 @@ const CourseInfo = {
   
   
   
-  /* MAIN CODE */
   
-  //  Using a Set to track seen learner_ids
+  
+  /*VALIDATE FUNCTIONS */
+  
+  //Checking if the course id is valid
+  function getLearnerData(assignmentGroup,courseInfo) {
+  // Validate course and assignment group
+  if (assignmentGroup.course_id !== courseInfo.id) {
+    throw new Error("AssignmentGroup does not belong to the provided CourseInfo");
+  }
+  }
+  
+  /* MAIN CODE */
+    
+  
+  //Filter assignments based on due date whish isn't start
+  function getFuterAssignment(assignmentGroup) {
+    const currentDate = new Date();
+    const validAssignments = assignmentGroup.assignments.filter(assignment => {
+      const dueDate = new Date(assignment.due_at);
+      return dueDate > currentDate && assignment.points_possible > 0; // Avoided null and undefined values
+    }); 
+    return validAssignments;
+  }
+  
+  // Return an array of objects, where each object represents a learner and has the following properties:
   function getLearner(LearnerSubmissions) {
   const uniqueLearnerIDs = LearnerSubmissions
     .map(submission => submission.learner_id) 
@@ -130,18 +153,44 @@ const CourseInfo = {
       delete leanerIDSubmissions[i][j].submission;
     }
   }  
+     // CHECKING //
+    // console.log(`arrayOfLearners:`);
+    // console.log(leanerIDSubmissions);
+    // END CHECKING //
+    
     return leanerIDSubmissions;
   }
+  
+  
   // -----//------//
   
+  // --- // ---- // NEW MAIN CODE // ---- // --- //
+  
+  const futerAssignments = getFuterAssignment(AssignmentGroup);
+  let arrayOfLearners = getLearner(LearnerSubmissions);
+  
+   // CHECKING //
+  // console.log(`Futer assignments:`);
+  // console.log(futerAssignments);
+   // CHECKING //
+  
+  // Remove all valid assignments from the array of learners
+  
+  
+  
+  
+  //------------------///
   // Sum of possible scores for all assignments 
   const sumOfPointsPossible = AssignmentGroup.assignments.reduce((accumulator, currentAssignment) => {
     return accumulator + currentAssignment.points_possible;
   }, 0);
-  console.log(sumOfPointsPossible);
+     // CHECKING //
+  // console.log(sumOfPointsPossible);
+    // END CHECKING //
   
+    
   // Sum of scores for each Leaner for all assignments
-  const arrayOfLearners = getLearner(LearnerSubmissions);
+  // const arrayOfLearners = getLearner(LearnerSubmissions);
   for ( let i in arrayOfLearners) {
   let sumOfPointsLearner = arrayOfLearners[i].map((item) => {
     return item.score;})
@@ -150,7 +199,9 @@ const CourseInfo = {
   }
   
   // ----- // ------ //
-  console.log(arrayOfLearners);
+   // CHECKING //
+  // console.log(arrayOfLearners);
+   // CHECKING //
   
   // ----- // ------ //
   
@@ -161,8 +212,9 @@ const CourseInfo = {
     due_date: assignment.due_at
   }));
   
-  console.log(idAndPoints);
-  
+   // CHECKING //
+  // console.log(idAndPoints);
+   // CHECKING //
   
   // Calculate average score for each learner 
   let leanersOutput = [];
@@ -170,118 +222,19 @@ const CourseInfo = {
     let obj = {};
     obj.id = arrayOfLearners[i][0].learner_id;
     obj.avg = Math.floor((arrayOfLearners[i].totalScore/ sumOfPointsPossible)*100)/100;
-    for (let k in arrayOfLearners) {
-      for (let i=0; i<idAndPoints.length; i++) {
-        for (let j=0; j<arrayOfLearners[k].length; j++) {
-          if (arrayOfLearners[k][j].assignment_id === idAndPoints[i].id) {            
-                 obj[`id${idAndPoints[i].id}`] = Math.floor((arrayOfLearners[k][j].score/idAndPoints[i].points_possible)*100)/100;
-          }
-  
-    }
-       }
-    }
+      for (let k=0; k<idAndPoints.length; k++) {
+        for (let j=0; j<arrayOfLearners[i].length; j++) {
+          if (arrayOfLearners[i][j].assignment_id === idAndPoints[k].id) {      
+                  if (Date.parse(arrayOfLearners[i][j].submitted_at) <= Date.parse(idAndPoints[k].due_date)) {        
+                    obj[`ast_id${idAndPoints[k].id}`] = Math.floor((arrayOfLearners[i][j].score/idAndPoints[k].points_possible)*100)/100; 
+                  }  else  {
+                    arrayOfLearners[i][j].score -= idAndPoints[k].points_possible*0.1;
+                    arrayOfLearners[i][j].score = Math.max(arrayOfLearners[i][j].score, 0); // Ensure score does not go negative   
+                    obj[`ast_id${idAndPoints[k].id}`] = Math.floor((arrayOfLearners[i][j].score/idAndPoints[k].points_possible)*100)/100; 
+                  } 
+                 }
+             }
+  }
     leanersOutput.push(obj);
   }
-  
-  
   console.log(leanersOutput);
-  
-  
-  // ------ /// ---- //
-  
-  
-  
-  
-  
-  
-  // let leanersOutput = [];
-  // for (let i=0; i<arrayOfLearners.length; i++) {
-  //   let obj = {};
-  //   obj.id = arrayOfLearners[i][0].learner_id;
-  //   obj.avg = Math.floor((arrayOfLearners[i].totalScore/ sumOfPointsPossible)*100)/100;  
-  //   leanersOutput.push(obj);
-  // }
-  
-  
-  // console.log(leanersOutput);
-  
-  
-  // for (let k in leanersOutput) {
-  //   for (let i=0; i<idAndPoints.length; i++) {
-  //     for (let j=0; j<arrayOfLearners[k].length; j++) {
-  //       if (arrayOfLearners[k][j].assignment_id === idAndPoints[i].id) {
-  //            leanersOutput[k][idAndPoints[i].id] = Math.floor((arrayOfLearners[k][j].score/idAndPoints[i].points_possible)*100)/100;
-  //       }
-  // }
-  //    }
-  // }
-  // console.log(leanersOutput);
-  
-  
-  
-  /*let score = 0;
-  let  score3 =  arrayOfLearners[0].map((assignment_scored) => {
-    idAndPoints.forEach(assignment => {
-    console.log(assignment.id);
-    console.log(assignment_scored.assignment_id);
-   if  (assignment_scored.assignment_id === assignment.id) {
-         console.log(assignment_scored.score);
-         console.log(assignment.points_possible);
-        }
-   score = Math.floor((assignment_scored.score/assignment.points_possible)*100)/100;  
-  }); return score });
-  
-  console.log(score3);
-  
-  
-   let score4 =  idAndPoints.map(assignment => {
-      let learnScoreAssignment =  arrayOfLearners[0].map((assignment_scored) => {
-      console.log(assignment.id);
-     console.log(assignment_scored.assignment_id);
-      if  (assignment_scored.assignment_id === assignment.id) {
-         console.log(assignment_scored.score);
-         console.log(assignment.points_possible);
-        }
-  return Math.floor((assignment_scored.score/assignment.points_possible)*100)/100;  
-  }); 
-     return learnScoreAssignment;
-     });
-  
-  console.log(score4); 
-  
-  // Create array with Learner ID, Assignment ID, Score and Date
-   let score5 = [];
-    for (let i=0; i<idAndPoints.length; i++) {
-      let obj = {};
-      for (let j=0; j<arrayOfLearners[0].length; j++) {
-        if (arrayOfLearners[0][j].assignment_id === idAndPoints[i].id) {
-           obj[idAndPoints[i].id] = arrayOfLearners[0][j].score/idAndPoints[i].points_possible;
-        }
-  }
-      score5.push(obj);
-     }
-  
-  console.log(score5);*/
-  // ------ /// ---- //
-  
-  
-  
-  
-  ///////////////////
-  
-  
-  
-  
-  
-  
-   // for (let i in uniqueLearnerIDs) {
-   //   let obj = {};
-   //   obj.learner_id = uniqueLearnerIDs[i];
-        // learnerID.push(obj);
-   //   console.log(obj);
-   // }
-  
-  
-  
-  
-  
