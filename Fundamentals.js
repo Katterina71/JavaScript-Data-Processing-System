@@ -26,7 +26,14 @@ const CourseInfo = {
       {
         id: 3,
         name: "Code the World",
-        due_at: "2023-13-15",
+        due_at: "3467-12-15",
+        points_possible: 500,
+      },
+  
+      {
+        id: 4,
+        name: "Code the World",
+        due_at: "3468-12-15",
         points_possible: 500,
       },
     ],
@@ -76,31 +83,6 @@ const CourseInfo = {
     },
   ];
   
-  /* EXAMPLE */
-  
-  // function getLearnerData(course, ag, submissions) {
-  //   // here, we would process this data to achieve the desired result.
-  //   const result = [
-  //     {
-  //       id: 125,
-  //       avg: 0.985, // (47 + 150) / (50 + 150)
-  //       1: 0.94, // 47 / 50
-  //       2: 1.0 // 150 / 150
-  //     },
-  //     {
-  //       id: 132,
-  //       avg: 0.82, // (39 + 125) / (50 + 150)
-  //       1: 0.78, // 39 / 50
-  //       2: 0.833 // late: (140 - 15) / 150
-  //     }
-  //   ];
-  
-  //   return result;
-  // }
-  
-  // const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
-  
-  
   
   
   
@@ -114,127 +96,129 @@ const CourseInfo = {
   }
   }
   
-  /* MAIN CODE */
-    
-  
   //Filter assignments based on due date whish isn't start
-  function getFuterAssignment(assignmentGroup) {
+  function removeFuterAssignment(assignmentGroup) {
     const currentDate = new Date();
     const validAssignments = assignmentGroup.assignments.filter(assignment => {
-      const dueDate = new Date(assignment.due_at);
-      return dueDate > currentDate && assignment.points_possible > 0; // Avoided null and undefined values
+      const dueDate = new Date(assignment.due_at);  
+      if (dueDate <= currentDate && assignment.points_possible > 0) 
+        return assignment;
     }); 
+    // console.log(validAssignments);
     return validAssignments;
   }
   
+  
+  /* MAIN CODE */
+    
+  
+  function getAssignmentsData(AssignmentGroup) {
+  const assignmentData = AssignmentGroup.map(assignment => ({
+      id: assignment.id,
+      points_possible: assignment.points_possible,
+      due_date: assignment.due_at
+  }));
+   return assignmentData;
+  }
+  
   // Return an array of objects, where each object represents a learner and has the following properties:
-  function getLearner(LearnerSubmissions) {
+  
+  function getLearner(LearnerSubmissions, idAndPoints) {
   const uniqueLearnerIDs = LearnerSubmissions
     .map(submission => submission.learner_id) 
     .filter((id, index, self) => self.indexOf(id) === index); 
   
+  // Array of learner IDs
   let learnerID = [];
   uniqueLearnerIDs.forEach((item) => {
     let obj = {};
     obj.id = item;
     learnerID.push(obj);
   }); 
-  let leanerIDSubmissions = [];
   
+  
+  // Array of learner IDs and their properties
+  let leanerIDSubmissions = [];
     for (let i=0; i<learnerID.length; i++) {
     let newArray = LearnerSubmissions.filter((item) => item.learner_id === learnerID[i].id)
     leanerIDSubmissions.push(newArray);
     }
   
+  //First analyze and transform submisson data for each learner
     for (let i=0; i<leanerIDSubmissions.length; i++) {
       for (let j=0; j<leanerIDSubmissions[i].length; j++) {
       leanerIDSubmissions[i][j].score = leanerIDSubmissions[i][j].submission.score;
       leanerIDSubmissions[i][j].submitted_at = leanerIDSubmissions[i][j].submission.submitted_at;
+        // add information about each Assignment
+      const currentAssigment = idAndPoints.find((assignment) => (assignment.id === leanerIDSubmissions[i][j].assignment_id)); 
+      leanerIDSubmissions[i][j].points_possible = currentAssigment.points_possible;
+  
+      // check submision date and change score if it was late
+        if (Date.parse(leanerIDSubmissions[i][j].submitted_at) > Date.parse(currentAssigment.due_date)) {        
+            leanerIDSubmissions[i][j].score -=  leanerIDSubmissions[i][j].points_possible*0.1;
+            leanerIDSubmissions[i][j].score = Math.max(leanerIDSubmissions[i][j].score, 0);
+        }    
+        leanerIDSubmissions[i][j].percentage = Math.floor(( leanerIDSubmissions[i][j].score/leanerIDSubmissions[i][j].points_possible)*100)/100;    
       delete leanerIDSubmissions[i][j].submission;
+      delete leanerIDSubmissions[i][j].submitted_at;
     }
   }  
-     // CHECKING //
-    // console.log(`arrayOfLearners:`);
-    // console.log(leanerIDSubmissions);
-    // END CHECKING //
-    
+      // add total score for each learner
+      leanerIDSubmissions.forEach((learners) => {
+      const sumSubmitted = learners.reduce((accumulator, learner) => accumulator + learner.score, 0,);
+      learners.totalScore = sumSubmitted;     
+    })
     return leanerIDSubmissions;
   }
   
   
+  
+  
   // -----//------//
   
-  // --- // ---- // NEW MAIN CODE // ---- // --- //
   
-  const futerAssignments = getFuterAssignment(AssignmentGroup);
-  let arrayOfLearners = getLearner(LearnerSubmissions);
+  // MAIN FUNCTION //
+  function getLearnerData(AssignmentGroup, CourseInfo, LearnerSubmissions) {
+    
   
-   // CHECKING //
-  // console.log(`Futer assignments:`);
-  // console.log(futerAssignments);
-   // CHECKING //
+  // Remove all futer assignments
+  const currentAssignments = removeFuterAssignment(AssignmentGroup);
+  const assignmentData = getAssignmentsData(currentAssignments);
   
-  // Remove all valid assignments from the array of learners
+  // Remove all futer assignments from learner submissions
+  const learnersCurrentAssignment = LearnerSubmissions.filter(submission => 
+    assignmentData.some(assignment => assignment.id === submission.assignment_id)
+    );
+    
+  // Get learner data  
+  const arrayOfLearners = getLearner(learnersCurrentAssignment, assignmentData);
   
-  
-  
-  
-  //------------------///
-  // Sum of possible scores for all assignments 
-  const sumOfPointsPossible = AssignmentGroup.assignments.reduce((accumulator, currentAssignment) => {
+  // Total posibble points for all assignments
+  const sumOfPointsPossible = currentAssignments.reduce((accumulator, currentAssignment) => {
     return accumulator + currentAssignment.points_possible;
   }, 0);
-     // CHECKING //
-  // console.log(sumOfPointsPossible);
-    // END CHECKING //
   
-    
-  // Sum of scores for each Leaner for all assignments
-  // const arrayOfLearners = getLearner(LearnerSubmissions);
-  for ( let i in arrayOfLearners) {
-  let sumOfPointsLearner = arrayOfLearners[i].map((item) => {
-    return item.score;})
-  .reduce((accumulate,score) => (accumulate+score));
-    arrayOfLearners[i].totalScore = sumOfPointsLearner;
-  }
-  
-  // ----- // ------ //
-   // CHECKING //
-  // console.log(arrayOfLearners);
-   // CHECKING //
-  
-  // ----- // ------ //
-  
-  // Creat array with Assiignment ID, Points and Date
-  const idAndPoints = AssignmentGroup.assignments.map(assignment => ({
-    id: assignment.id,
-    points_possible: assignment.points_possible,
-    due_date: assignment.due_at
-  }));
-  
-   // CHECKING //
-  // console.log(idAndPoints);
-   // CHECKING //
-  
-  // Calculate average score for each learner 
+  // Generate output array
   let leanersOutput = [];
   for (let i=0; i<arrayOfLearners.length; i++) {
     let obj = {};
     obj.id = arrayOfLearners[i][0].learner_id;
-    obj.avg = Math.floor((arrayOfLearners[i].totalScore/ sumOfPointsPossible)*100)/100;
-      for (let k=0; k<idAndPoints.length; k++) {
-        for (let j=0; j<arrayOfLearners[i].length; j++) {
-          if (arrayOfLearners[i][j].assignment_id === idAndPoints[k].id) {      
-                  if (Date.parse(arrayOfLearners[i][j].submitted_at) <= Date.parse(idAndPoints[k].due_date)) {        
-                    obj[`ast_id${idAndPoints[k].id}`] = Math.floor((arrayOfLearners[i][j].score/idAndPoints[k].points_possible)*100)/100; 
-                  }  else  {
-                    arrayOfLearners[i][j].score -= idAndPoints[k].points_possible*0.1;
-                    arrayOfLearners[i][j].score = Math.max(arrayOfLearners[i][j].score, 0); // Ensure score does not go negative   
-                    obj[`ast_id${idAndPoints[k].id}`] = Math.floor((arrayOfLearners[i][j].score/idAndPoints[k].points_possible)*100)/100; 
-                  } 
-                 }
-             }
-  }
+    obj.avg = Math.floor((arrayOfLearners[i].totalScore/sumOfPointsPossible)*100)/100;
+    for (let j in assignmentData) {
+      for (let k in arrayOfLearners[i]){
+        if (arrayOfLearners[i][k].assignment_id === assignmentData[j].id) {
+           obj[`${assignmentData[j].id}`] = arrayOfLearners[i][k].percentage; }
+      }
+    }
     leanersOutput.push(obj);
   }
-  console.log(leanersOutput);
+  return leanersOutput;
+  }
+  
+  
+  
+  // MAIN CODE //
+  const result = getLearnerData(AssignmentGroup, CourseInfo, LearnerSubmissions)
+  console.log(result);
+  
+  
