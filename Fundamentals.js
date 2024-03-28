@@ -45,7 +45,7 @@ const CourseInfo = {
       learner_id: 125,
       assignment_id: 1,
       submission: {
-        submitted_at: "2023-01-25",
+        submitted_at: "2023-13-25",
         score: 47,
       },
     },
@@ -89,24 +89,92 @@ const CourseInfo = {
   /*VALIDATE FUNCTIONS */
   
   //Checking if the course id is valid
-  function getLearnerData(assignmentGroup,courseInfo) {
+  function assignmentsBelongsToCourse(assignmentGroup,courseInfo) {
   // Validate course and assignment group
   if (assignmentGroup.course_id !== courseInfo.id) {
+    console.warn(`AssignmentGroup ${assignmentGroup.name} ID ${assignmentGroup.course_id} does not belong to the provided CourseInfo ${courseInfo.name}  ID ${courseInfo.id}`);
     throw new Error("AssignmentGroup does not belong to the provided CourseInfo");
   }
   }
   
   //Filter assignments based on due date whish isn't start
   function removeFuterAssignment(assignmentGroup) {
-    const currentDate = new Date();
+    const currentDate = Date.now();
     const validAssignments = assignmentGroup.assignments.filter(assignment => {
-      const dueDate = new Date(assignment.due_at);  
+      const dueDate = Date.parse(assignment.due_at);  
       if (dueDate <= currentDate && assignment.points_possible > 0) 
         return assignment;
     }); 
     // console.log(validAssignments);
     return validAssignments;
   }
+  
+  //  VALIDATION //
+  
+  function isNumber(value) {
+    return typeof value === 'number' && !isNaN(value);
+  }
+  
+  function isValidDate(dateString) {
+    const date = new Date(dateString);
+    return !isNaN(date.getTime()); // getTime() returns NaN for invalid dates
+  }
+  
+  function validateLearnerSubmission(submission) {
+    if (!isNumber(submission.learner_id)) {
+      throw new Error('learner_id must be a number');
+    }
+  
+    if (!isNumber(submission.assignment_id)) {
+      throw new Error('assignment_id must be a number');
+    }
+  
+    if (!isValidDate(submission.submission.submitted_at)) {
+      throw new Error('submitted_at must be a valid date string');
+    }
+  
+    if (!isNumber(submission.submission.score)) {
+      throw new Error('score must be a number');
+    }
+  
+    // If all checks pass, return true
+    return true;
+  }
+  
+  
+  
+  
+  // START VALIDATION //
+  
+  // Checking all data for LearnerSubmissions array
+  LearnerSubmissions.forEach(submission => {
+  try {
+    const submissionCheck = submission;
+    if (validateLearnerSubmission(submissionCheck)) {
+      console.log(`Submission ${submissionCheck.assignment_id} for Learner ${submissionCheck.learner_id} is valid.`);
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+  
+  })
+  
+  // Checking all data for LearnerSubmissions array
+  LearnerSubmissions.forEach(submission => {
+  try {
+    const submissionCheck = submission;
+    if (validateLearnerSubmission(submissionCheck)) {
+      console.log(`Submission ${submissionCheck.assignment_id} for Learner ${submissionCheck.learner_id} is valid.`);
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+  
+  })
+  
+  
+  // END VALIDATION //
+  
   
   
   /* MAIN CODE */
@@ -171,16 +239,19 @@ const CourseInfo = {
     return leanerIDSubmissions;
   }
   
-  
-  
-  
   // -----//------//
   
   
   // MAIN FUNCTION //
-  function getLearnerData(AssignmentGroup, CourseInfo, LearnerSubmissions) {
+  function getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions) {
     
+  // VALIDATION //
+    assignmentsBelongsToCourse(AssignmentGroup,CourseInfo);
   
+  
+  
+  
+    
   // Remove all futer assignments
   const currentAssignments = removeFuterAssignment(AssignmentGroup);
   const assignmentData = getAssignmentsData(currentAssignments);
@@ -218,7 +289,7 @@ const CourseInfo = {
   
   
   // MAIN CODE //
-  const result = getLearnerData(AssignmentGroup, CourseInfo, LearnerSubmissions)
+  const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions)
   console.log(result);
   
   
