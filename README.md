@@ -8,10 +8,49 @@ The script created for this project, named getLearnerData(), performs the follow
 
 1. **Data Input:** Accepts three specific types of data as input parameters:
 
-* `CourseInfo` object
-* `AssignmentGroup` object
-* Array of `LearnerSubmission` objects
-  
+
+* `CourseInfo` object, which looks like this:
+```
+{
+  "id": number,
+  "name": string,
+}
+```
+* `AssignmentGroup` object, which looks like this:
+```{
+  "id": number,
+  "name": string,
+  // the ID of the course the assignment group belongs to
+  "course_id": number,
+  // the percentage weight of the entire assignment group
+  "group_weight": number,
+  "assignments": [AssignmentInfo],
+}
+``````
+* Each `AssignmentInfo object` within the `assignments` array looks like this:
+``````
+{
+  "id": number,
+  "name": string,
+  // the due date for the assignment
+  "due_at": Date string,
+  // the maximum points possible for the assignment
+  "points_possible": number,
+}
+``````
+
+* Array of `LearnerSubmission`` objects, which each look like this:
+```
+{
+    "learner_id": number,
+    "assignment_id": number,
+    "submission": {
+      "submitted_at": Date string,
+      "score": number
+    }
+}
+``````
+
 2. **Output:** Returns an array of objects. Each object contains a learner's ID, their weighted average score, and individual assignment scores as percentage values.
 3. **Validation:** Ensure the AssignmentGroup belongs to the correct course by matching `course_id`. Throw an error for invalid data.
 4. **Error Handling:** Manage errors gracefully, such as division by zero or unexpected data types.
@@ -39,7 +78,13 @@ Throughout this project, the following core JavaScript programming concepts and 
     4.  **Score Greater Than points_possible:** Check that no score exceeds its corresponding `points_possible` to prevent illogical score distributions and maintain the integrity of results.
     5.  **Checking All Students Submit Assignment:** Verify that submissions exist for all students to ensure comprehensive evaluation and avoid missing data during the analysis of assignments.
 
-
+Data output:
+```
+[
+  { '1': 0.94, '2': 1, id: 125, avg: 0.98 },
+  { '1': 0.78, '2': 0.83, id: 132, avg: 0.82 }
+]
+```
 
 ## Completion Statement
 This project has been  completed, with the `getLearnerData()` function meeting all specified requirements and objectives. The script has been thoroughly tested with various data scenarios to ensure accuracy and reliability in its output.

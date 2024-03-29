@@ -291,15 +291,16 @@ const CourseInfo = {
       return true;
     }
   }
-  
   // END VALIDATION //
   
-  /* MAIN CODE */
+  
+  /* FUNCTIONS FOR MAIN CODE */
   function roundNumber(numberOne, numberTwo) {
-    const number = Math.floor((numberOne / numberTwo) * 1000) / 1000;
+    const number = Math.floor((numberOne / numberTwo) * 100) / 100;
     return number;
   }
   
+  //Get assignments data from AssignmentGroup array
   function getAssignmentsData(AssignmentGroup) {
     const assignmentData = AssignmentGroup.map((assignment) => ({
       id: assignment.id,
@@ -310,7 +311,6 @@ const CourseInfo = {
   }
   
   // Return an array of objects, where each object represents a learner and has the following properties:
-  
   function getLearner(LearnerSubmissions, idAndPoints) {
     const uniqueLearnerIDs = LearnerSubmissions.map(
       (submission) => submission.learner_id,
@@ -368,6 +368,7 @@ const CourseInfo = {
         delete leanerIDSubmissions[i][j].submitted_at;
       }
     }
+    
     // add total score for each learner
     leanerIDSubmissions.forEach((learners) => {
       const sumSubmitted = learners.reduce(
@@ -379,12 +380,38 @@ const CourseInfo = {
     return leanerIDSubmissions;
   }
   
-  // -----//------//
+  
+  // check all learners have all assignments
+  function checkAllLearnersHaveAllAssignments(learnerSubmissions, assigments) {
+  
+  const assignmentIds = assigments.map(assignment => assignment.id);
+  
+    for (let learnerGroup of learnerSubmissions) {
+      const submissionsOnly = learnerGroup.filter(sub => sub.assignment_id);
+  
+      for (let id of assignmentIds) {
+        let found = false;
+        
+        for (let submission of submissionsOnly) {
+          if (submission.assignment_id === id) {
+            found = true;
+            break; // Found the submission for this assignment
+          }
+        }
+        if (!found) {
+          // This learner doesn't have a submission for the assignment
+          return false;
+        }
+      }
+    }
+    return true; // All learners have submissions for all assignments
+  }
+  
   
   // MAIN FUNCTION //
   function getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions) {
+   
     // VALIDATION //
-  
     const errorFind = validationData(
       CourseInfo,
       AssignmentGroup,
@@ -400,6 +427,7 @@ const CourseInfo = {
     //get all assignments info from AssignmentGroup
     const assignmentData = getAssignmentsData(currentAssignments);
   
+  
     // Remove all futurer assignments from learner submissions
     const learnersCurrentAssignment = LearnerSubmissions.filter((submission) =>
       assignmentData.some(
@@ -407,8 +435,16 @@ const CourseInfo = {
       ),
     );
   
-    // Get learner data
+    // Get all learner data
     const arrayOfLearners = getLearner(learnersCurrentAssignment, assignmentData);
+  
+    // checkAllLearnersHaveAllAssignments(arrayOfLearners, assignmentData);
+    const allsubmit = checkAllLearnersHaveAllAssignments(arrayOfLearners, assignmentData);
+    // Stop is not all learners have all current assignments
+    if (!allsubmit) {
+       console.warn('Not all learners have all assignments. Please check Learners Data!');
+      return false;
+    }
   
     // Total posibble points for all assignments
     const sumOfPointsPossible = currentAssignments.reduce(
