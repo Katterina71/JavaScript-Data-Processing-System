@@ -1,3 +1,5 @@
+
+
 // The provided course information.
 const CourseInfo = {
     id: 451,
@@ -6,7 +8,7 @@ const CourseInfo = {
   
   // The provided assignment group.
   const AssignmentGroup = {
-    id: 12345,
+    id: 451,
     name: "Fundamentals of JavaScript",
     course_id: 451,
     group_weight: 25,
@@ -14,14 +16,14 @@ const CourseInfo = {
       {
         id: 1,
         name: "Declare a Variable",
-        due_at: "2023-01-25",
+        due_at: "2023-12-25",
         points_possible: 50, // change for checking
       },
       {
         id: 2,
         name: "Write a Function",
-        due_at: "2023-02-27",
-        points_possible: 150,
+        due_at: "02-27-2023",
+        points_possible: 123,
       },
       {
         id: 3,
@@ -40,48 +42,65 @@ const CourseInfo = {
   };
   
   // The provided learner submission data.
-  const LearnerSubmissions = [
-    {
-      learner_id: 125,
-      assignment_id: 1,
-      submission: {
-        submitted_at: "2023-13-25",
-        score: 47,
-      },
-    },
-    {
-      learner_id: 125,
-      assignment_id: 2,
-      submission: {
-        submitted_at: "2023-02-12",
-        score: 150,
-      },
-    },
-    {
-      learner_id: 125,
-      assignment_id: 3,
-      submission: {
-        submitted_at: "2023-01-25",
-        score: 400,
-      },
-    },
-    {
-      learner_id: 132,
-      assignment_id: 1,
-      submission: {
-        submitted_at: "2023-01-24",
-        score: 39,
-      },
-    },
-    {
-      learner_id: 132,
-      assignment_id: 2,
-      submission: {
-        submitted_at: "2023-03-07",
-        score: 140,
-      },
-    },
-  ];
+  const LearnerSubmissions = [{
+    learner_id: 126,
+    assignment_id: 8,
+    submission: {
+      submitted_at: "4/4/2023",
+      score: 193
+    }
+  }, {
+    learner_id: 39,
+    assignment_id: 5,
+    submission: {
+      submitted_at: "1/4/2023",
+      score: 62
+    }
+  }, {
+    learner_id: 161,
+    assignment_id: 2,
+    submission: {
+      submitted_at: "12/4/2022",
+      score: 110
+    }
+  }, {
+    learner_id: 77,
+    assignment_id: 2,
+    submission: {
+      submitted_at: "12/8/2022",
+      score: 4
+    }
+  }, {
+    learner_id: 47,
+    assignment_id: 1,
+    submission: {
+      submitted_at: "3/7/2023",
+      score: 49
+    }
+  }, {
+    learner_id: 174,
+    assignment_id: 8,
+    submission: {
+      submitted_at: "12/7/2022",
+      score: 69
+    }
+  }, {
+    learner_id: 114,
+    assignment_id: 3,
+    submission: {
+      submitted_at: "4/11/2023",
+      score: 0
+    }
+  }, {
+    learner_id: 163,
+    assignment_id: 2,
+    submission: {
+      submitted_at: "4/10/2023",
+      score: 98
+    }
+  }]
+  
+  
   
   
   
@@ -111,8 +130,13 @@ const CourseInfo = {
   
   //  VALIDATION //
   
+  // VALIDATION DATA //
+  function isString(value){
+    return typeof value === 'string' && !(value instanceof String);
+  }
+  
   function isNumber(value) {
-    return typeof value === 'number' && !isNaN(value);
+    return typeof value === 'number' && !isNaN(parseFloat(value)) && isFinite(value);;
   }
   
   function isValidDate(dateString) {
@@ -120,25 +144,136 @@ const CourseInfo = {
     return !isNaN(date.getTime()); // getTime() returns NaN for invalid dates
   }
   
-  function validateLearnerSubmission(submission) {
-    if (!isNumber(submission.learner_id)) {
-      throw new Error('learner_id must be a number');
+  function validateCourseInfo(courseInfo) {
+  
+    if (!isNumber(courseInfo.id)) {
+      console.log(`Error in CourseInfo array. Please check course ${courseInfo.name} courseInfo.id must be a number`)
+      throw new Error(`Error in CourseInfo array.`);
     }
   
-    if (!isNumber(submission.assignment_id)) {
-      throw new Error('assignment_id must be a number');
-    }
-  
-    if (!isValidDate(submission.submission.submitted_at)) {
-      throw new Error('submitted_at must be a valid date string');
-    }
-  
-    if (!isNumber(submission.submission.score)) {
-      throw new Error('score must be a number');
-    }
+    if  (!isString(courseInfo.name)) {
+      console.log(`Error in CourseInfo array. Please check course ${courseInfo.id}. Course Name must be a string`)
+      throw new Error(`Error in CourseInfo array`);}
   
     // If all checks pass, return true
     return true;
+  }
+  
+  
+  function validateAssignmentGroup(assignment) {
+  
+    if (!isNumber(assignment.id)) {
+      console.log(`Please check assignment ${assignment.name} Assignment id must be a number`)
+      throw new Error(`Error in AssignmentGroup array.`);
+    }
+  
+    if  (!isString(assignment.name)) {
+      console.log(`Please check assignment ${assignment.id}. Assignment Name must be a string`)
+      throw new Error(`Error in AssignmentGroup array`);}
+  
+    if (!isNumber(assignment.course_id)) {
+      console.log(`Please check assignment ${assignment.id} course_id must be a number`)
+      throw new Error(`Error in AssignmentGroup array.`);
+    }
+  
+    if (!isNumber(assignment.group_weight)) {
+      console.log(`Please check assignment ${assignment.id} group_weight must be a number`)
+      throw new Error(`Error in AssignmentGroup array.`);
+    }
+  
+    // Check each assignment
+    assignment.assignments.forEach(item => {  
+      if (!isNumber(item.id)) {
+        console.log(`Please check assignment ${item.name} assignments.id must be a number`)
+        throw new Error(`Error in AssignmentGroup array.`);
+      }
+  
+      if  (!isString(item.name)) {
+        console.log(`Please check assignment ${item.id} assignments.name Name must be a string`)
+        throw new Error(`Error in AssignmentGroup array`);}
+  
+      if (!isValidDate(item.due_at)) {
+        console.warn(` Please check assignment ${item.id} assignments.due_at must be a Date`);
+        throw new Error(`Error in AssignmentGroup array.`);
+      }
+  
+      if (!isNumber(item.points_possible)) {
+        console.log(`Please check assignment ${item.id} assignments.points_possible must be a number`)
+        throw new Error(`Error in AssignmentGroup array.`);
+      }
+      
+    })
+      
+  
+    // If all checks pass, return true
+    return true;
+  }
+  
+  
+  
+  function validateLearnerData(submission) {
+    if (!isNumber(submission.learner_id)) {
+      console.warn(`Please check learners ID`);
+      throw new Error(`Error in LearnerSubmission array.`);
+    }
+  
+    if (!isNumber(submission.assignment_id)) {
+      console.warn(`Please check learner ${submission.learner_id}.assignment_id must be a number`);
+      throw new Error(`Error in LearnerSubmission array.`);
+    }
+  
+    if (!isValidDate(submission.submission.submitted_at)) {
+      console.warn(`Please check learner ${submission.learner_id} in assignment ${submission.assignment_id} submitted_at must be a Date`);
+      throw new Error(`Error in LearnerSubmission array.`);
+    }
+  
+    if (!isNumber(submission.submission.score)) {
+      console.warn(`Please check learner ${submission.learner_id} in assignment ${submission.assignment_id} score must be a number`);
+      throw new Error(`Error in LearnerSubmission array.`);
+    }
+    // If all checks pass, return true
+    return true;
+  }
+  
+  // Check Score in AssignmentGroup and LearnerSubmissions arrays
+  function validateScoreData(learnerassignment, assignment) {
+        assignment.forEach(element => {
+      if (element.points_possible <= 0) {
+        console.warn(`Please check assignment ID ${element.id} points_possible must be a greater 0`);
+        throw new Error(`Error in Assignment array.`);
+      }
+    })
+    
+    learnerassignment.forEach(learner => {
+    if (learner.submission.score < 0) {
+      console.warn(`Please check Learner ${learner.learner_id} assignment ID ${learner.assignment_id} Score must be a greater 0`);
+      throw new Error(`Error in LearnerSubmissions array.`);
+    }
+  })
+  
+     assignment.forEach(array => {
+       learnerassignment.filter(learner => {
+         if (learner.assignment_id === array.id && learner.submission.score > array.points_possible) {
+           console.warn(`Please check learner ${learner.learner_id}  assignment ID ${learner.assignment_id} SCORE must be less than or equal to ${array.points_possible}`);
+           throw new Error(`Error in LearnerSubmissions array.`);
+         }
+       })
+     })
+    
+  }
+  
+  
+  // Go throught the learner submissions and validate them
+  function validateLearnerSubmissions(learnerSubmissions) {
+  
+    learnerSubmissions.forEach(submission => {
+    try {
+      const submissionCheck = submission;
+      if (validateLearnerData(submissionCheck)) {
+      }
+    } catch (error) {
+      console.error(error.message);}
+    })
   }
   
   
@@ -147,38 +282,37 @@ const CourseInfo = {
   // START VALIDATION //
   
   // Checking all data for LearnerSubmissions array
-  LearnerSubmissions.forEach(submission => {
-  try {
-    const submissionCheck = submission;
-    if (validateLearnerSubmission(submissionCheck)) {
-      console.log(`Submission ${submissionCheck.assignment_id} for Learner ${submissionCheck.learner_id} is valid.`);
-    }
-  } catch (error) {
-    console.error(error.message);
+  function validationData(courseInfo, assignmentGroup, learnerSubmissions) {
+    
+   try {
+  // Check coursInfo
+    validateCourseInfo(courseInfo);
+    validateAssignmentGroup(assignmentGroup);
+     
+    assignmentsBelongsToCourse(assignmentGroup,courseInfo);
+  
+    validateLearnerSubmissions(learnerSubmissions);
+    validateScoreData(learnerSubmissions, assignmentGroup.assignments);
+   }
+  catch (error) {
+    console.warn(`Please check the data for the following error: ${error.message}`)
   }
   
-  })
   
-  // Checking all data for LearnerSubmissions array
-  LearnerSubmissions.forEach(submission => {
-  try {
-    const submissionCheck = submission;
-    if (validateLearnerSubmission(submissionCheck)) {
-      console.log(`Submission ${submissionCheck.assignment_id} for Learner ${submissionCheck.learner_id} is valid.`);
-    }
-  } catch (error) {
-    console.error(error.message);
+  
+  
+  
   }
-  
-  })
-  
   
   // END VALIDATION //
   
   
   
   /* MAIN CODE */
-    
+  function roundNumber(numberOne, numberTwo){
+   const number = Math.floor((numberOne/numberTwo)*100)/100;
+    return number;
+  }
   
   function getAssignmentsData(AssignmentGroup) {
   const assignmentData = AssignmentGroup.map(assignment => ({
@@ -226,7 +360,8 @@ const CourseInfo = {
             leanerIDSubmissions[i][j].score -=  leanerIDSubmissions[i][j].points_possible*0.1;
             leanerIDSubmissions[i][j].score = Math.max(leanerIDSubmissions[i][j].score, 0);
         }    
-        leanerIDSubmissions[i][j].percentage = Math.floor(( leanerIDSubmissions[i][j].score/leanerIDSubmissions[i][j].points_possible)*100)/100;    
+        // leanerIDSubmissions[i][j].percentage = Math.floor(( leanerIDSubmissions[i][j].score/leanerIDSubmissions[i][j].points_possible)*100)/100;    
+        leanerIDSubmissions[i][j].percentage = roundNumber(leanerIDSubmissions[i][j].score, leanerIDSubmissions[i][j].points_possible)
       delete leanerIDSubmissions[i][j].submission;
       delete leanerIDSubmissions[i][j].submitted_at;
     }
@@ -244,10 +379,9 @@ const CourseInfo = {
   
   // MAIN FUNCTION //
   function getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions) {
-    
-  // VALIDATION //
-    assignmentsBelongsToCourse(AssignmentGroup,CourseInfo);
   
+  // VALIDATION //
+  validationData(CourseInfo, AssignmentGroup, LearnerSubmissions)
   
   
   
@@ -274,7 +408,8 @@ const CourseInfo = {
   for (let i=0; i<arrayOfLearners.length; i++) {
     let obj = {};
     obj.id = arrayOfLearners[i][0].learner_id;
-    obj.avg = Math.floor((arrayOfLearners[i].totalScore/sumOfPointsPossible)*100)/100;
+    // obj.avg = Math.floor((arrayOfLearners[i].totalScore/sumOfPointsPossible)*100)/100;
+    obj.avg = roundNumber(arrayOfLearners[i].totalScore, sumOfPointsPossible);
     for (let j in assignmentData) {
       for (let k in arrayOfLearners[i]){
         if (arrayOfLearners[i][k].assignment_id === assignmentData[j].id) {
