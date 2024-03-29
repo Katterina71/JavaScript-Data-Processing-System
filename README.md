@@ -3,6 +3,9 @@
 ## Overview
 This project represents of a JavaScript-based assignment that focuses on data processing and manipulation within the educational domain. The primary goal was to develop a script capable of analyzing and transforming educational data into a structured and insightful format.
 
+Visit the completed project [JavaScript Processing System Page](https://htmlpreview.github.io/?https://github.com/Katterina71/jsSBA308/blob/main/index.html).
+
+
 ## Task Description
 The script created for this project, named getLearnerData(), performs the following key operations:
 
