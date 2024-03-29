@@ -36,7 +36,8 @@ Throughout this project, the following core JavaScript programming concepts and 
   3.**Negative Score or points_possible:** Validate that both scores and points_possible are non-negative to maintain logical correctness in scoring algorithms.
   4. **Score Greater Than points_possible:** Check that no score exceeds its corresponding points_possible to prevent illogical score distributions and maintain the integrity of results.
   5.**Checking All Students Submit Assignment:** Verify that submissions exist for all students to ensure comprehensive evaluation and avoid missing data during the analysis of assignments.
-  
+
+
 
 ## Completion Statement
 This project has been  completed, with the `getLearnerData()` function meeting all specified requirements and objectives. The script has been thoroughly tested with various data scenarios to ensure accuracy and reliability in its output.
