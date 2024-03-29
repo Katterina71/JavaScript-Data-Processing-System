@@ -67,7 +67,7 @@ const CourseInfo = {
       },
     },
     {
-      learner_id: 1,
+      learner_id: 132,
       assignment_id: 2,
       submission: {
         submitted_at: "2023-03-07",
@@ -111,9 +111,8 @@ const CourseInfo = {
   }
   
   function isNumber(value) {
-    return (
-      typeof value === "number" && !isNaN(parseFloat(value)) && isFinite(value)
-    );
+    return typeof value === 'number' && !isNaN(parseFloat(value)) && isFinite(value);
+  
   }
   
   function isValidDate(dateString) {
@@ -297,7 +296,7 @@ const CourseInfo = {
   
   /* MAIN CODE */
   function roundNumber(numberOne, numberTwo) {
-    const number = Math.floor((numberOne / numberTwo) * 100) / 100;
+    const number = Math.floor((numberOne / numberTwo) * 1000) / 1000;
     return number;
   }
   
