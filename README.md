@@ -15,7 +15,12 @@ The script created for this project, named getLearnerData(), performs the follow
 2. **Output:** Returns an array of objects. Each object contains a learner's ID, their weighted average score, and individual assignment scores as percentage values.
 3. **Validation:** Ensure the AssignmentGroup belongs to the correct course by matching `course_id`. Throw an error for invalid data.
 4. **Error Handling:** Manage errors gracefully, such as division by zero or unexpected data types.
-5. **Assignment Inclusion:** Exclude assignments not yet due or adjust scores for late submissions accordingly.
+
+
+## Additional Considerations
+**Exclude Un-due Assignments:** If an assignment's due date has not yet passed, exclude it from the results and the average score calculations. This ensures that only relevant and due assignments contribute to the learner's performance metrics.
+**Late Submission Penalty:** For submissions that are late (where `submitted_at` is `past due_at`), deduct 10 percent of the total points possible from the learner's score for that particular assignment. This penalty reflects the importance of meeting deadlines and affects the learner's total score accordingly.
+
    
 ## Objectives Achieved
 Throughout this project, the following core JavaScript programming concepts and techniques were successfully applied and demonstrated:
@@ -25,7 +30,13 @@ Throughout this project, the following core JavaScript programming concepts and 
 * **Data Organization:** Organization and management of complex data through the strategic use of arrays and objects, facilitating easy access and manipulation of data points.
 * **Function Development:** Creation of reusable, modular functions aimed at reducing code repetition and enhancing the script's maintainability.
 * **Looping and Iteration:** Employing loops and array methods for efficient data traversal and manipulation, especially in handling collections of data.
-* **Error Handling:** Graceful management of potential code failures through the implementation of `try/catch` blocks, ensuring the program's robustness against unexpected data or runtime errors.
+* **Error Handling:** Graceful management of potential code failures through the implementation of `try/catch` blocks, ensuring the program's robustness against unexpected data or runtime errors:
+  1.**Checking All Data Types in Arrays:** Ensure every item in the array adheres to the expected data type to prevent type-related errors and inconsistencies in data processing.
+  2.**Divided by 0 if Don't Have points_possible:** Guard against division by zero by verifying that points_possible is a positive number before performing any division operations to calculate scores.
+  3.**Negative Score or points_possible:** Validate that both scores and points_possible are non-negative to maintain logical correctness in scoring algorithms.
+  4. **Score Greater Than points_possible:** Check that no score exceeds its corresponding points_possible to prevent illogical score distributions and maintain the integrity of results.
+  5.**Checking All Students Submit Assignment:** Verify that submissions exist for all students to ensure comprehensive evaluation and avoid missing data during the analysis of assignments.
+  
 
 ## Completion Statement
 This project has been  completed, with the `getLearnerData()` function meeting all specified requirements and objectives. The script has been thoroughly tested with various data scenarios to ensure accuracy and reliability in its output.
