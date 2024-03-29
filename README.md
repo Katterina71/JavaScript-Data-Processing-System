@@ -1,4 +1,4 @@
-# JavaScript Processing System
+# JavaScript Data Processing System
 
 ## Overview
 This project represents of a JavaScript-based assignment that focuses on data processing and manipulation within the educational domain. The primary goal was to develop a script capable of analyzing and transforming educational data into a structured and insightful format.
