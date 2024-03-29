@@ -8,7 +8,7 @@ const CourseInfo = {
   
   // The provided assignment group.
   const AssignmentGroup = {
-    id: 451,
+    id: 452,
     name: "Fundamentals of JavaScript",
     course_id: 451,
     group_weight: 25,
@@ -61,7 +61,7 @@ const CourseInfo = {
     assignment_id: 2,
     submission: {
       submitted_at: "12/4/2022",
-      score: 110
+      score: 110,
     }
   }, {
     learner_id: 77,
@@ -99,8 +99,6 @@ const CourseInfo = {
       score: 98
     }
   }]
-  
-  
   
   
   
@@ -272,7 +270,8 @@ const CourseInfo = {
       if (validateLearnerData(submissionCheck)) {
       }
     } catch (error) {
-      console.error(error.message);}
+      console.error(error.message);
+    }
     })
   }
   
@@ -283,25 +282,20 @@ const CourseInfo = {
   
   // Checking all data for LearnerSubmissions array
   function validationData(courseInfo, assignmentGroup, learnerSubmissions) {
+  try {
+    // Check coursInfo
+      validateCourseInfo(courseInfo);
+      validateAssignmentGroup(assignmentGroup);
+  
+      assignmentsBelongsToCourse(assignmentGroup,courseInfo);
+  
+      validateLearnerSubmissions(learnerSubmissions);
+      validateScoreData(learnerSubmissions, assignmentGroup.assignments); }
+    catch (error) {
+      console.error('Please check the data for the following error:', error.message);
+      return true;
+    }
     
-   try {
-  // Check coursInfo
-    validateCourseInfo(courseInfo);
-    validateAssignmentGroup(assignmentGroup);
-     
-    assignmentsBelongsToCourse(assignmentGroup,courseInfo);
-  
-    validateLearnerSubmissions(learnerSubmissions);
-    validateScoreData(learnerSubmissions, assignmentGroup.assignments);
-   }
-  catch (error) {
-    console.warn(`Please check the data for the following error: ${error.message}`)
-  }
-  
-  
-  
-  
-  
   }
   
   // END VALIDATION //
@@ -380,10 +374,14 @@ const CourseInfo = {
   // MAIN FUNCTION //
   function getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions) {
   
+    
   // VALIDATION //
-  validationData(CourseInfo, AssignmentGroup, LearnerSubmissions)
   
+  const errorFind = validationData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   
+  if (errorFind) {
+    return
+  }
   
     
   // Remove all futer assignments
@@ -420,7 +418,6 @@ const CourseInfo = {
   }
   return leanersOutput;
   }
-  
   
   
   // MAIN CODE //
