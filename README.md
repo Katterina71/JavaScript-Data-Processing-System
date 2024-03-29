@@ -30,12 +30,14 @@ Throughout this project, the following core JavaScript programming concepts and 
 * **Data Organization:** Organization and management of complex data through the strategic use of arrays and objects, facilitating easy access and manipulation of data points.
 * **Function Development:** Creation of reusable, modular functions aimed at reducing code repetition and enhancing the script's maintainability.
 * **Looping and Iteration:** Employing loops and array methods for efficient data traversal and manipulation, especially in handling collections of data.
+
 * **Error Handling:** Graceful management of potential code failures through the implementation of `try/catch` blocks, ensuring the program's robustness against unexpected data or runtime errors:
-  1.**Checking All Data Types in Arrays:** Ensure every item in the array adheres to the expected data type to prevent type-related errors and inconsistencies in data processing.
-  2.**Divided by 0 if Don't Have points_possible:** Guard against division by zero by verifying that points_possible is a positive number before performing any division operations to calculate scores.
-  3.**Negative Score or points_possible:** Validate that both scores and points_possible are non-negative to maintain logical correctness in scoring algorithms.
-  4. **Score Greater Than points_possible:** Check that no score exceeds its corresponding points_possible to prevent illogical score distributions and maintain the integrity of results.
-  5.**Checking All Students Submit Assignment:** Verify that submissions exist for all students to ensure comprehensive evaluation and avoid missing data during the analysis of assignments.
+  
+    1.  **Checking All Data Types in Arrays:** Ensure every item in the array adheres to the expected data type to prevent type-related errors and inconsistencies in data processing.
+    2.  **Divided by 0 if Don't Have points_possible:** Guard against division by zero by verifying that `points_possible` is a positive number before performing any division operations to calculate scores.
+    3.  **Negative Score or points_possible:** Validate that both `scores` and `points_possible` are non-negative to maintain logical correctness in scoring algorithms.
+    4.  **Score Greater Than points_possible:** Check that no score exceeds its corresponding `points_possible` to prevent illogical score distributions and maintain the integrity of results.
+    5.  **Checking All Students Submit Assignment:** Verify that submissions exist for all students to ensure comprehensive evaluation and avoid missing data during the analysis of assignments.
 
 
 
