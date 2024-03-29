@@ -296,7 +296,7 @@ const CourseInfo = {
   
   /* FUNCTIONS FOR MAIN CODE */
   function roundNumber(numberOne, numberTwo) {
-    const number = Math.floor((numberOne / numberTwo) * 100) / 100;
+    const number = Math.floor((numberOne / numberTwo) * 1000) / 1000;
     return number;
   }
   

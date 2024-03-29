@@ -81,8 +81,8 @@ Throughout this project, the following core JavaScript programming concepts and 
 Data output:
 ```
 [
-  { '1': 0.94, '2': 1, id: 125, avg: 0.98 },
-  { '1': 0.78, '2': 0.83, id: 132, avg: 0.82 }
+  { '1': 0.94, '2': 1, id: 125, avg: 0.985 },
+  { '1': 0.78, '2': 0.833, id: 132, avg: 0.82 }
 ]
 ```
 
