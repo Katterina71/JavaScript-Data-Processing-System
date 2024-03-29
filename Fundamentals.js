@@ -6,7 +6,7 @@ const CourseInfo = {
   
   // The provided assignment group.
   const AssignmentGroup = {
-    id: 452,
+    id: 12345,
     name: "Fundamentals of JavaScript",
     course_id: 451,
     group_weight: 25,
@@ -14,26 +14,19 @@ const CourseInfo = {
       {
         id: 1,
         name: "Declare a Variable",
-        due_at: "2023-12-25",
-        points_possible: 50, // change for checking
+        due_at: "2023-01-25",
+        points_possible: 50,
       },
       {
         id: 2,
         name: "Write a Function",
-        due_at: "02-27-2023",
-        points_possible: 123,
+        due_at: "2023-02-27",
+        points_possible: 150,
       },
       {
         id: 3,
         name: "Code the World",
-        due_at: "3467-12-15",
-        points_possible: 500,
-      },
-  
-      {
-        id: 4,
-        name: "Code the World",
-        due_at: "3468-12-15",
+        due_at: "3156-11-15",
         points_possible: 500,
       },
     ],
@@ -42,67 +35,43 @@ const CourseInfo = {
   // The provided learner submission data.
   const LearnerSubmissions = [
     {
-      learner_id: 126,
-      assignment_id: 8,
-      submission: {
-        submitted_at: "4/4/2023",
-        score: 193,
-      },
-    },
-    {
-      learner_id: 39,
-      assignment_id: 5,
-      submission: {
-        submitted_at: "1/4/2023",
-        score: 62,
-      },
-    },
-    {
-      learner_id: 161,
-      assignment_id: 2,
-      submission: {
-        submitted_at: "12/4/2022",
-        score: 110,
-      },
-    },
-    {
-      learner_id: 77,
-      assignment_id: 2,
-      submission: {
-        submitted_at: "12/8/2022",
-        score: 4,
-      },
-    },
-    {
-      learner_id: 47,
+      learner_id: 125,
       assignment_id: 1,
       submission: {
-        submitted_at: "3/7/2023",
-        score: 49,
+        submitted_at: "2023-01-25",
+        score: 47,
       },
     },
     {
-      learner_id: 174,
-      assignment_id: 8,
-      submission: {
-        submitted_at: "12/7/2022",
-        score: 69,
-      },
-    },
-    {
-      learner_id: 114,
-      assignment_id: 3,
-      submission: {
-        submitted_at: "4/11/2023",
-        score: 0,
-      },
-    },
-    {
-      learner_id: 163,
+      learner_id: 125,
       assignment_id: 2,
       submission: {
-        submitted_at: "4/10/2023",
-        score: 98,
+        submitted_at: "2023-02-12",
+        score: 150,
+      },
+    },
+    {
+      learner_id: 125,
+      assignment_id: 3,
+      submission: {
+        submitted_at: "2023-01-25",
+        score: 400,
+      },
+    },
+    {
+      learner_id: 132,
+      assignment_id: 1,
+      submission: {
+        submitted_at: "2023-01-24",
+        score: 39,
+      },
+    },
+    {
+      learner_id: 1,
+      assignment_id: 2,
+      submission: {
+        submitted_at: "2023-03-07",
+        score: 140,
       },
     },
   ];
@@ -300,19 +269,6 @@ const CourseInfo = {
     });
   }
   
-  // Go throught the learner submissions and validate them
-  function validateLearnerSubmissions(learnerSubmissions) {
-    learnerSubmissions.forEach((submission) => {
-      try {
-        const submissionCheck = submission;
-        if (validateLearnerData(submissionCheck)) {
-        }
-      } catch (error) {
-        console.error(error.message);
-      }
-    });
-  }
-  
   // START VALIDATION //
   
   // Checking all data for LearnerSubmissions array
@@ -324,7 +280,9 @@ const CourseInfo = {
   
       assignmentsBelongsToCourse(assignmentGroup, courseInfo);
   
-      validateLearnerSubmissions(learnerSubmissions);
+      learnerSubmissions.forEach((submission) => {
+        validateLearnerData(submission);
+      });
       validateScoreData(learnerSubmissions, assignmentGroup.assignments);
     } catch (error) {
       console.error(
@@ -351,16 +309,6 @@ const CourseInfo = {
     }));
     return assignmentData;
   }
-  
-  function allLearnerSubmissions(assignmentGroup, learnerSubmissions) {
-    
-  }
-  
-  
-  
-  
-  
-  
   
   // Return an array of objects, where each object represents a learner and has the following properties:
   
@@ -413,7 +361,6 @@ const CourseInfo = {
             0,
           );
         }
-        // leanerIDSubmissions[i][j].percentage = Math.floor(( leanerIDSubmissions[i][j].score/leanerIDSubmissions[i][j].points_possible)*100)/100;
         leanerIDSubmissions[i][j].percentage = roundNumber(
           leanerIDSubmissions[i][j].score,
           leanerIDSubmissions[i][j].points_possible,
@@ -449,12 +396,10 @@ const CourseInfo = {
       return;
     }
   
-    // Remove all futer assignments
+    // Remove all future assignments
     const currentAssignments = removeFutureAssignment(AssignmentGroup);
     //get all assignments info from AssignmentGroup
     const assignmentData = getAssignmentsData(currentAssignments);
-  
-    
   
     // Remove all futurer assignments from learner submissions
     const learnersCurrentAssignment = LearnerSubmissions.filter((submission) =>
@@ -466,10 +411,6 @@ const CourseInfo = {
     // Get learner data
     const arrayOfLearners = getLearner(learnersCurrentAssignment, assignmentData);
   
-  
-    //Check all learners submited assignments
-    allLearnerSubmissions(assignmentData, learnersCurrentAssignment)
-  
     // Total posibble points for all assignments
     const sumOfPointsPossible = currentAssignments.reduce(
       (accumulator, currentAssignment) => {
@@ -480,7 +421,7 @@ const CourseInfo = {
   
     // Generate output array
     let leanersOutput = [];
-    let i =0;
+    let i = 0;
     while (i < arrayOfLearners.length) {
       let obj = {};
       obj.id = arrayOfLearners[i][0].learner_id;
